@@ -6,7 +6,6 @@ import pandas as pd
 
 from app.analytics.deep_work import deep_work
 from app.analytics.focus import focus
-from app.analytics.prayers import prayers
 from app.analytics.productivity import productivity
 from app.analytics.sleep import sleep_focus
 from app.analytics.sufficiency import data_sufficiency
@@ -29,14 +28,12 @@ def career_output(df: pd.DataFrame) -> dict[str, Any]:
 def overview(
     sessions: pd.DataFrame,
     distractions: pd.DataFrame,
-    prayers_frame: pd.DataFrame,
     career: pd.DataFrame,
 ) -> dict[str, Any]:
     return {
         "deep_work_minutes": deep_work(sessions)["total_minutes"],
         "distraction_minutes": time_leaks(distractions)["total_minutes"],
         "career_units": career_output(career)["total_units"],
-        "prayer_completion_percent": prayers(prayers_frame)["completion_percent"],
     }
 
 
@@ -44,13 +41,12 @@ def analyze(
     kind: str,
     sessions: pd.DataFrame,
     distractions: pd.DataFrame,
-    prayers_frame: pd.DataFrame,
     sleep: pd.DataFrame,
     career: pd.DataFrame,
 ) -> dict[str, Any]:
     frames = [
         frame
-        for frame in (sessions, distractions, prayers_frame, sleep, career)
+        for frame in (sessions, distractions, sleep, career)
         if not frame.empty
     ]
     days = len(set(pd.concat(frames)["local_date"])) if frames else 0
@@ -60,14 +56,11 @@ def analyze(
         "deep-work": lambda: deep_work(sessions),
         "best-worst-days": lambda: productivity(sessions, distractions, career),
         "focus-by-time": lambda: focus(sessions),
-        "prayers": lambda: prayers(prayers_frame),
         "career-output": lambda: career_output(career),
-        "weekday-weekend": lambda: weekday_weekend(
-            sessions, distractions, prayers_frame
-        ),
+        "weekday-weekend": lambda: weekday_weekend(sessions, distractions),
         "sleep-focus": lambda: sleep_focus(sessions, sleep),
-        "trends": lambda: trends(sessions, distractions, prayers_frame),
-        "overview": lambda: overview(sessions, distractions, prayers_frame, career),
+        "trends": lambda: trends(sessions, distractions),
+        "overview": lambda: overview(sessions, distractions, career),
     }
     envelope["result"] = results[kind]() if kind in results else results["overview"]()
     return envelope

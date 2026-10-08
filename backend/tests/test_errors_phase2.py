@@ -55,10 +55,6 @@ def test_domain_errors_use_stable_codes():
             client.delete("/career-output/999").json()["error"]["code"]
             == "CAREER_OUTPUT_NOT_FOUND"
         )
-        assert (
-            client.delete("/prayers/2026-10-08/FAJR").json()["error"]["code"]
-            == "PRAYER_LOG_NOT_FOUND"
-        )
 
 
 def test_analytics_parameter_errors_are_actionable():

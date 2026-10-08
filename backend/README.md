@@ -1,7 +1,7 @@
 # Personal Analytics Backend
 
 FastAPI + SQLAlchemy + SQLite backend for low-friction personal work,
-distraction, sleep, prayer, and career-output logging. The analytics layer is
+distraction, sleep, and career-output logging. The analytics layer is
 local-only and uses pandas; it does not call external services.
 
 ## Quick start
@@ -75,7 +75,6 @@ domain data. It is intended for local demos only.
 - `/sessions` — start, stop, create, list, and delete work sessions
 - `/distractions` — start, stop, create, list, and delete distractions
 - `/sleep` — create, list, and delete sleep logs
-- `/prayers` — update, list, and delete prayer logs
 - `/career-output` — create, list, and delete career-output records
 - `GET /today` — current local-day summary
 - `GET /analytics/{kind}` — analytics for overview, trends, focus, sleep, and
@@ -90,9 +89,8 @@ frontend workflows and examples, and `/docs` for generated schemas.
 ## Analytics limitations
 
 Durations are tracked durations, not complete time-use measurement. Sparse data
-is explicitly labeled in every analytics response. Correlations describe
-association, not causation. Focus-by-hour buckets require at least three
-sessions. Prayer reporting is neutral and limited to counts and percentages.
+is explicitly labeled in every analytics response. Correlations describe association, not causation. Focus-by-hour buckets require
+at least three sessions.
 
 ## Data model
 
@@ -100,7 +98,6 @@ sessions. Prayer reporting is neutral and limited to counts and percentages.
 erDiagram
   WORK_SESSIONS
   DISTRACTIONS
-  PRAYER_LOGS
   SLEEP_LOGS
   CAREER_OUTPUTS
 ```

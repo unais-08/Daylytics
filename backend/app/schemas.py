@@ -6,8 +6,6 @@ from app.models import (
     Activity,
     CareerOutputType,
     DistractionCategory,
-    Prayer,
-    PrayerStatus,
 )
 
 
@@ -103,15 +101,10 @@ class CareerOutputCreate(BaseModel):
     note: str | None = None
 
 
-class PrayerUpdate(BaseModel):
-    status: PrayerStatus
-
-
 class TodayResponse(BaseModel):
     date: date
     active_session: SessionResponse | None
     active_distraction: DistractionResponse | None
-    prayers: dict[Prayer, PrayerStatus | None]
     totals: dict[str, float]
 
 

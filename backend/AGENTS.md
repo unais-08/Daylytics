@@ -3,7 +3,7 @@
 ## Purpose
 
 This is a local-first FastAPI analytics backend. It records work sessions,
-distractions, sleep, prayers, and career output, then computes pandas-based
+distractions, sleep, and career output, then computes pandas-based
 analytics without external services.
 
 ## Folder map

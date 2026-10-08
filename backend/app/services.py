@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime, timedelta
+from datetime import datetime, timedelta
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -60,8 +60,3 @@ def ensure_no_overlap(
     if item is not None:
         code = "OVERLAPPING_SESSION" if kind == "session" else "OVERLAPPING_DISTRACTION"
         raise BusinessRuleError(code, details={"conflicting_id": item.id})
-
-
-def validate_prayer_date(value: date) -> None:
-    if value > datetime.now(UTC).date():
-        raise BusinessRuleError("PRAYER_DATE_IN_FUTURE")

@@ -11,7 +11,6 @@ def test_seed_populates_every_domain_and_export_delete():
         assert exported.status_code == 200
         payload = exported.json()
         assert len(payload["work_sessions"]) >= 60
-        assert len(payload["prayer_logs"]) == 300
         assert (
             client.get("/analytics/overview?range=30d").json()["result"][
                 "deep_work_minutes"

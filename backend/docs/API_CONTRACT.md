@@ -30,5 +30,5 @@ payload examples, analytics behavior, and error handling, see
 
 Import [personal-analytics.postman_collection.json](personal-analytics.postman_collection.json)
 into Postman. It uses `{{baseUrl}} = http://127.0.0.1:8000` and includes the
-health check, logging flows, prayers, analytics, export, and confirmed delete
+health check, logging flows, analytics, export, and confirmed delete
 requests.

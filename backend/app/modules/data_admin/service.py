@@ -4,7 +4,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.core.exceptions import DangerousActionError
-from app.models import CareerOutput, Distraction, PrayerLog, SleepLog, WorkSession
+from app.models import CareerOutput, Distraction, SleepLog, WorkSession
 
 
 def serialize_model(item) -> dict:
@@ -26,9 +26,6 @@ def export_data(db: Session) -> dict[str, list[dict]]:
         "distractions": [
             serialize_model(x) for x in db.scalars(select(Distraction)).all()
         ],
-        "prayer_logs": [
-            serialize_model(x) for x in db.scalars(select(PrayerLog)).all()
-        ],
         "sleep_logs": [serialize_model(x) for x in db.scalars(select(SleepLog)).all()],
         "career_outputs": [
             serialize_model(x) for x in db.scalars(select(CareerOutput)).all()
@@ -39,6 +36,6 @@ def export_data(db: Session) -> dict[str, list[dict]]:
 def delete_data(db: Session, confirm: bool) -> None:
     if not confirm:
         raise DangerousActionError("CONFIRMATION_REQUIRED")
-    for model in (WorkSession, Distraction, PrayerLog, SleepLog, CareerOutput):
+    for model in (WorkSession, Distraction, SleepLog, CareerOutput):
         db.execute(delete(model))
     db.commit()

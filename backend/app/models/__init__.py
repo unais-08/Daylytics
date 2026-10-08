@@ -4,9 +4,6 @@ from app.models.entities import (
     CareerOutputType,
     Distraction,
     DistractionCategory,
-    Prayer,
-    PrayerLog,
-    PrayerStatus,
     SleepLog,
     WorkSession,
 )
@@ -17,9 +14,6 @@ __all__ = [
     "CareerOutputType",
     "Distraction",
     "DistractionCategory",
-    "Prayer",
-    "PrayerLog",
-    "PrayerStatus",
     "SleepLog",
     "WorkSession",
 ]

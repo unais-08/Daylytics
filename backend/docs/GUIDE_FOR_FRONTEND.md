@@ -86,15 +86,13 @@ For `VALIDATION_ERROR`, field errors are available here:
 
 ### Dashboard / Today
 
-Load `GET /today` when the home screen opens. Refresh it after every start,
-stop, prayer update, or new log.
+Load `GET /today` when the home screen opens. Refresh it after every start, stop, or new log.
 
 Suggested sections:
 
 - Active work timer
 - Active distraction timer
 - Today’s work and distraction totals
-- Five prayer buttons
 - Quick career-output actions
 - Sleep summary or link to sleep logging
 
@@ -108,7 +106,6 @@ Use small forms and one-click actions:
 - Add retroactive distraction
 - Add sleep log
 - Add career output
-- Toggle prayer status
 
 ### Analytics
 
@@ -292,45 +289,6 @@ MOCK_INTERVIEW
 
 `logged_at` is optional and defaults to the current time.
 
-### Prayers
-
-Allowed prayers:
-
-```text
-FAJR
-DHUHR
-ASR
-MAGHRIB
-ISHA
-```
-
-Allowed statuses:
-
-```text
-completed
-missed
-```
-
-Update is idempotent:
-
-```http
-PUT /prayers/2026-10-08/FAJR
-```
-
-```json
-{"status": "completed"}
-```
-
-Other endpoints:
-
-```http
-GET /prayers?start_date=2026-10-01&end_date=2026-10-08
-DELETE /prayers/2026-10-08/FAJR
-```
-
-Prayer reporting is neutral: display counts and percentages, not moral
-judgments or warning language.
-
 ## 5. Analytics
 
 All analytics endpoints return:
@@ -363,16 +321,15 @@ Available analyses:
 
 | Endpoint | Main result fields |
 |---|---|
-| `/analytics/overview` | `deep_work_minutes`, `distraction_minutes`, `career_units`, `prayer_completion_percent` |
+| `/analytics/overview` | `deep_work_minutes`, `distraction_minutes`, `career_units` |
 | `/analytics/time-leaks` | `total_minutes`, `by_category`, `top_category` |
 | `/analytics/deep-work` | `total_minutes`, `session_count`, daily averages, longest session, average focus |
 | `/analytics/best-worst-days` | `days`, `top_3`, `bottom_3` |
 | `/analytics/focus-by-time` | `by_hour`, `by_period` |
-| `/analytics/prayers` | completed, missed, completion percentage, per-prayer rates |
 | `/analytics/career-output` | `total_units`, `by_type` |
-| `/analytics/weekday-weekend` | weekday/weekend deep work, distractions, prayer percentage |
+| `/analytics/weekday-weekend` | weekday/weekend deep work and distractions |
 | `/analytics/sleep-focus` | `correlation`, with label `correlation, not causation` |
-| `/analytics/trends` | `daily_deep_work`, `weekly_distraction`, `weekly_prayer` |
+| `/analytics/trends` | `daily_deep_work`, `weekly_distraction` |
 
 If there is no data, analytics still return HTTP 200. Render an empty state
 using the returned `data_sufficiency.message`; do not treat it as a network

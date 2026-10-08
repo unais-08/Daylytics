@@ -15,9 +15,6 @@ from app.models import (
     CareerOutputType,
     Distraction,
     DistractionCategory,
-    Prayer,
-    PrayerLog,
-    PrayerStatus,
     SleepLog,
     WorkSession,
 )
@@ -29,7 +26,7 @@ def seed_database(days: int = 60, seed: int = 42) -> None:
     settings = get_settings()
     today = datetime.now(UTC).date()
     with SessionLocal() as db:
-        for model in (WorkSession, Distraction, PrayerLog, SleepLog, CareerOutput):
+        for model in (WorkSession, Distraction, SleepLog, CareerOutput):
             db.query(model).delete()
         for offset in range(days - 1, -1, -1):
             day = today - timedelta(days=offset)
@@ -56,18 +53,6 @@ def seed_database(days: int = 60, seed: int = 42) -> None:
                     category=random.choice(list(DistractionCategory)),
                 )
             )
-            for prayer in Prayer:
-                db.add(
-                    PrayerLog(
-                        date=day,
-                        prayer=prayer,
-                        status=(
-                            PrayerStatus.COMPLETED
-                            if random.random() < 0.8
-                            else PrayerStatus.MISSED
-                        ),
-                    )
-                )
             wake = datetime.combine(day, time(6, 30), tzinfo=UTC)
             db.add(
                 SleepLog(

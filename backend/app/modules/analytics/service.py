@@ -11,14 +11,13 @@ from app.analytics.frames import build_frame
 from app.core.config import get_settings
 from app.core.exceptions import InvalidParameterError
 from app.core.time import duration_minutes
-from app.models import CareerOutput, Distraction, PrayerLog, SleepLog, WorkSession
+from app.models import CareerOutput, Distraction, SleepLog, WorkSession
 
 ALLOWED_ANALYSES = {
     "time-leaks",
     "deep-work",
     "best-worst-days",
     "focus-by-time",
-    "prayers",
     "career-output",
     "weekday-weekend",
     "sleep-focus",
@@ -73,16 +72,6 @@ def _load_frames(
                     "category": item.category.value,
                 }
             )
-    prayers = [
-        {
-            "local_date": item.date,
-            "weekday": item.date.weekday(),
-            "prayer": item.prayer.value,
-            "status": item.status.value,
-        }
-        for item in db.scalars(select(PrayerLog)).all()
-        if _in_range(item.date, start_date, end_date)
-    ]
     sleep = []
     for item in db.scalars(select(SleepLog)).all():
         wake = _local_datetime(item.wake_time, zone)
@@ -112,7 +101,6 @@ def _load_frames(
             ["local_date", "weekday", "hour", "minutes", "deep_work", "focus"],
         ),
         build_frame(distractions, ["local_date", "weekday", "minutes", "category"]),
-        build_frame(prayers, ["local_date", "weekday", "prayer", "status"]),
         build_frame(sleep, ["local_date", "next_day", "sleep_minutes"]),
         build_frame(career, ["local_date", "count", "type"]),
     )

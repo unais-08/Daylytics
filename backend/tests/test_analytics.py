@@ -35,7 +35,7 @@ def test_deep_work_hand_computed():
         ]
     )
     empty = pd.DataFrame()
-    result = analyze("deep-work", sessions, empty, empty, empty, empty)["result"]
+    result = analyze("deep-work", sessions, empty, empty, empty)["result"]
     assert result["total_minutes"] == 90
     assert result["session_count"] == 2
     assert result["median_daily_minutes"] == 45
@@ -65,13 +65,9 @@ def test_time_leaks_and_empty_data():
         ]
     )
     empty = pd.DataFrame()
-    result = analyze("time-leaks", empty, distractions, empty, empty, empty)["result"]
+    result = analyze("time-leaks", empty, distractions, empty, empty)["result"]
     assert result["total_minutes"] == 35
     assert result["top_category"] == "PHONE"
-    assert (
-        analyze("prayers", empty, empty, empty, empty, empty)["result"]["completed"]
-        == 0
-    )
 
 
 def test_sufficiency_thresholds():
