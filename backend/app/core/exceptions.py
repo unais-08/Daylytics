@@ -1,6 +1,6 @@
 from typing import Any
 
-from app.messages import MESSAGES
+from app.core.messages import MESSAGES
 
 
 class AppError(Exception):

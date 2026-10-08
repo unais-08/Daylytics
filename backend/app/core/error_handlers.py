@@ -9,8 +9,8 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import IntegrityError, OperationalError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.exceptions import AppError
-from app.messages import MESSAGES
+from app.core.exceptions import AppError
+from app.core.messages import MESSAGES
 
 logger = logging.getLogger("personal_analytics")
 

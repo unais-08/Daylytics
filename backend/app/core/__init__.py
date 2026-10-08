@@ -1,0 +1,1 @@
+"""Shared infrastructure for configuration, persistence, errors, logging, and middleware."""

@@ -12,9 +12,10 @@ from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.analytics import analyze
-from app.config import get_settings
-from app.database import get_db
-from app.error_handlers import (
+from app.api.router import router as api_router
+from app.core.config import get_settings
+from app.core.database import get_db
+from app.core.error_handlers import (
     app_error_handler,
     http_error_handler,
     integrity_error_handler,
@@ -22,7 +23,7 @@ from app.error_handlers import (
     unhandled_error_handler,
     validation_error_handler,
 )
-from app.exceptions import (
+from app.core.exceptions import (
     AppError,
     BusinessRuleError,
     ConflictError,
@@ -30,8 +31,9 @@ from app.exceptions import (
     InvalidParameterError,
     NotFoundError,
 )
-from app.logging_config import configure_logging
-from app.middleware import RequestIDMiddleware
+from app.core.logging import configure_logging
+from app.core.middleware import RequestIDMiddleware
+from app.core.time import comparable_utc, duration_minutes, local_date, utc_now
 from app.models import (
     Activity,
     CareerOutput,
@@ -57,12 +59,9 @@ from app.schemas import (
 from app.services import (
     active_distraction,
     active_session,
-    comparable_utc,
-    duration_minutes,
     effective_deep_work,
     ensure_no_active,
     ensure_no_overlap,
-    utc_now,
     validate_prayer_date,
     validate_time_window,
 )
@@ -83,6 +82,7 @@ app.add_exception_handler(RequestValidationError, validation_error_handler)
 app.add_exception_handler(StarletteHTTPException, http_error_handler)
 app.add_exception_handler(IntegrityError, integrity_error_handler)
 app.add_exception_handler(OperationalError, operational_error_handler)
+app.include_router(api_router)
 
 
 def custom_openapi():
@@ -140,22 +140,6 @@ def distraction_response(item: Distraction) -> DistractionResponse:
     return DistractionResponse.model_validate(item).model_copy(
         update={"duration_minutes": duration_minutes(item.start_time, item.end_time)}
     )
-
-
-def local_date(value: datetime) -> date:
-    if value.tzinfo is None:
-        value = value.replace(tzinfo=UTC)
-    return value.astimezone(ZoneInfo(get_settings().timezone)).date()
-
-
-@app.get("/")
-def root():
-    return {"message": "Productivity API is running"}
-
-
-@app.get("/health")
-def health():
-    return {"status": "ok"}
 
 
 def _serialize_model(item):
