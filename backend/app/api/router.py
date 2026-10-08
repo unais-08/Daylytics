@@ -2,6 +2,7 @@
 
 from fastapi import APIRouter
 
+from app.modules.analytics.router import router as analytics_router
 from app.modules.career_output.router import router as career_output_router
 from app.modules.data_admin.router import router as data_admin_router
 from app.modules.distractions.router import router as distractions_router
@@ -27,6 +28,7 @@ router.include_router(work_sessions_router)
 router.include_router(distractions_router)
 router.include_router(sleep_router)
 router.include_router(career_output_router)
+router.include_router(analytics_router)
 router.include_router(prayers_router)
 router.include_router(today_router)
 router.include_router(data_admin_router)

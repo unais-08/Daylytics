@@ -7,8 +7,7 @@ from alembic import context
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app import models  # noqa: F401
-from app.core.database import Base
+from app.db.base import Base
 
 config = context.config
 target_metadata = Base.metadata
