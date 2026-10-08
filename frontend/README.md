@@ -1,4 +1,52 @@
-# React + TypeScript + Vite
+# Personal Analytics frontend
+
+This is the React/Vite frontend for the local Personal Analytics API.
+
+## Run
+
+```powershell
+npm install
+npm run dev
+```
+
+The API defaults to `http://localhost:8000`. Override it with
+`VITE_API_BASE_URL` in a local `.env` file. Start the backend and seed demo data
+with `python scripts/seed.py` from the backend directory.
+
+## Commands
+
+```powershell
+npm run typecheck
+npm run lint
+npm run build
+npm run gen:api
+```
+
+`gen:api` reads the running backend's OpenAPI document and writes generated
+types to `src/api/schema.d.ts`.
+
+## Where to find things
+
+`src/api` owns the typed HTTP boundary and error parsing. `src/features` will
+own feature-specific hooks and components as the app grows. Shared controls
+live in `src/components`, formatting helpers in `src/lib`, and route
+composition currently lives in `src/App.tsx`. See `docs/PROGRESS.md` for the
+implementation checklist and `docs/DECISIONS.md` for choices that affect
+future work.
+
+## Current screens
+
+- **Today**: start and stop work or distraction timers, log prayers, career
+  output, and sleep.
+- **Dashboard**: choose an analysis and range, then view metrics and charts.
+  Filters are stored in the URL so a dashboard view can be shared.
+- **History**: add missed sessions or distractions and delete incorrect
+  entries.
+- **Settings**: export all data or permanently delete it after typing `DELETE`.
+
+The frontend is designed for a 375px mobile viewport first. Buttons have
+large tap targets, keyboard focus is visible, and empty/error states include a
+clear next action.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
