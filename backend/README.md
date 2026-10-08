@@ -4,25 +4,61 @@ FastAPI + SQLAlchemy + SQLite backend for low-friction personal work,
 distraction, sleep, prayer, and career-output logging. The analytics layer is
 local-only and uses pandas; it does not call external services.
 
-## Setup
+## Quick start
+
+Run these commands from the `backend` directory:
 
 ```powershell
-cd backend
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 alembic upgrade head
+uvicorn app.main:app --reload
 ```
 
-## Run and test
+The API is available at `http://127.0.0.1:8000`.
+
+- Swagger UI: `http://127.0.0.1:8000/docs`
+- ReDoc: `http://127.0.0.1:8000/redoc`
+- OpenAPI schema: `http://127.0.0.1:8000/openapi.json`
+
+The backend is a local-first, single-user application. It does not require
+authentication and does not send data to external services.
+
+## Development commands
+
+Run these from `backend` after activating the virtual environment:
 
 ```powershell
-uvicorn app.main:app --reload
 pytest -q
 ruff check app alembic tests
+python scripts/check_openapi.py
+alembic upgrade head
 ```
 
-Interactive API documentation is available at `/docs`.
+The OpenAPI check compares the current schema with
+`docs/openapi.before.json` and protects endpoint and response compatibility.
+
+## Configuration
+
+Settings use the `ANALYTICS_` environment-variable prefix. Defaults are
+suitable for local development:
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `ANALYTICS_DATABASE_URL` | `sqlite:///./analytics.db` | Database URL |
+| `ANALYTICS_TIMEZONE` | `Asia/Kolkata` | Local date and display calculations |
+| `ANALYTICS_DEEP_WORK_MIN_MINUTES` | `25` | Deep-work threshold |
+| `ANALYTICS_DAILY_DEEP_TARGET_MIN` | `240` | Daily deep-work target |
+| `ANALYTICS_DAILY_DISTRACTION_CAP_MIN` | `120` | Daily distraction cap |
+| `ANALYTICS_DAILY_CAREER_TARGET_UNITS` | `3` | Daily career-output target |
+
+For example:
+
+```powershell
+$env:ANALYTICS_DATABASE_URL = "sqlite:///./analytics.db"
+$env:ANALYTICS_TIMEZONE = "Asia/Kolkata"
+```
 
 ## Demo data
 
@@ -33,13 +69,23 @@ python scripts/seed.py
 The seed is deterministic (60 days, random seed 42) and replaces existing
 domain data. It is intended for local demos only.
 
-## Main endpoints
+## API overview
 
-- Logging: `/sessions`, `/distractions`, `/sleep`, `/career-output`, `/prayers`
-- Dashboard: `/today`
-- Analytics: `/analytics/{kind}` and `/analytics/overview`
-- Data portability: `GET /export`
-- Destructive reset: `DELETE /data?confirm=true`
+- `GET /health` — health check
+- `/sessions` — start, stop, create, list, and delete work sessions
+- `/distractions` — start, stop, create, list, and delete distractions
+- `/sleep` — create, list, and delete sleep logs
+- `/prayers` — update, list, and delete prayer logs
+- `/career-output` — create, list, and delete career-output records
+- `GET /today` — current local-day summary
+- `GET /analytics/{kind}` — analytics for overview, trends, focus, sleep, and
+  other supported analyses
+- `GET /export` — export all application data as JSON
+- `DELETE /data?confirm=true` — permanently delete all application data
+
+See [`docs/API_CONTRACT.md`](docs/API_CONTRACT.md) for a concise contract,
+[`docs/FRONTEND_BACKEND_GUIDE.md`](docs/FRONTEND_BACKEND_GUIDE.md) for
+frontend workflows and examples, and `/docs` for generated schemas.
 
 ## Analytics limitations
 
@@ -60,7 +106,12 @@ erDiagram
 ```
 
 See [docs/API_CONTRACT.md](docs/API_CONTRACT.md) for frontend integration
-details and [docs/DECISIONS.md](docs/DECISIONS.md) for implementation choices.
+details, [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the module boundaries,
+design decisions, and dependency rules.
+
+Backend contribution guidance is in [AGENTS.md](AGENTS.md). The refactor audit
+and deliberately preserved behavior gaps are recorded in
+[docs/REFACTOR_NOTES.md](docs/REFACTOR_NOTES.md).
 
 ## Errors
 

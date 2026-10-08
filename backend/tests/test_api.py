@@ -2,7 +2,7 @@ from datetime import UTC, datetime, timedelta
 
 from fastapi.testclient import TestClient
 
-from app.database import Base, engine
+from app.core.database import Base, engine
 from app.main import app
 
 

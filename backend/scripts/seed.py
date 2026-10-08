@@ -7,8 +7,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app.config import get_settings
-from app.database import Base, SessionLocal, engine
+from app.core.config import get_settings
+from app.core.database import Base, SessionLocal, engine
 from app.models import (
     Activity,
     CareerOutput,
