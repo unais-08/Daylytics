@@ -1,0 +1,434 @@
+{
+  "info": {
+    "_postman_id": "3f6e6b76-7e17-4f98-a3f5-analytics-api",
+    "name": "Personal Analytics API",
+    "description": "Local Postman collection for the FastAPI personal analytics backend.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "sessionId",
+      "value": "1"
+    },
+    {
+      "key": "distractionId",
+      "value": "1"
+    },
+    {
+      "key": "sleepId",
+      "value": "1"
+    },
+    {
+      "key": "careerOutputId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Health is OK', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().status).to.eql('ok');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Today dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/today"
+          }
+        },
+        {
+          "name": "OpenAPI schema",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/openapi.json"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Work sessions",
+      "item": [
+        {
+          "name": "Start session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"activity\": \"DSA\"\n}"
+            },
+            "url": "{{baseUrl}}/sessions/start"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Session started', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  pm.collectionVariables.set('sessionId', pm.response.json().id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Stop session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"focus_score\": 4\n}"
+            },
+            "url": "{{baseUrl}}/sessions/{{sessionId}}/stop"
+          }
+        },
+        {
+          "name": "Create manual session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"activity\": \"PROJECT\",\n  \"start_time\": \"2026-10-08T08:00:00Z\",\n  \"end_time\": \"2026-10-08T09:30:00Z\",\n  \"focus_score\": 4,\n  \"deep_work\": true\n}"
+            },
+            "url": "{{baseUrl}}/sessions"
+          }
+        },
+        {
+          "name": "List sessions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/sessions?start_date=2026-10-01&end_date=2026-10-08&activity=DSA"
+          }
+        },
+        {
+          "name": "Delete session",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/sessions/{{sessionId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Distractions",
+      "item": [
+        {
+          "name": "Start distraction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"YOUTUBE\"\n}"
+            },
+            "url": "{{baseUrl}}/distractions/start"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Distraction started', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  pm.collectionVariables.set('distractionId', pm.response.json().id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Stop distraction",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/distractions/{{distractionId}}/stop"
+          }
+        },
+        {
+          "name": "Create retroactive distraction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"PHONE\",\n  \"minutes\": 20\n}"
+            },
+            "url": "{{baseUrl}}/distractions"
+          }
+        },
+        {
+          "name": "List distractions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/distractions"
+          }
+        },
+        {
+          "name": "Delete distraction",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/distractions/{{distractionId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sleep and career",
+      "item": [
+        {
+          "name": "Create sleep log",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sleep_start\": \"2026-10-07T23:00:00Z\",\n  \"wake_time\": \"2026-10-08T06:30:00Z\"\n}"
+            },
+            "url": "{{baseUrl}}/sleep"
+          }
+        },
+        {
+          "name": "List sleep logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/sleep"
+          }
+        },
+        {
+          "name": "Create career output",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"DSA_PROBLEMS\",\n  \"count\": 2,\n  \"note\": \"Arrays and hashing\"\n}"
+            },
+            "url": "{{baseUrl}}/career-output"
+          }
+        },
+        {
+          "name": "List career outputs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/career-output"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Prayers",
+      "item": [
+        {
+          "name": "Mark Fajr completed",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\"\n}"
+            },
+            "url": "{{baseUrl}}/prayers/2026-10-08/FAJR"
+          }
+        },
+        {
+          "name": "List prayers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/prayers?start_date=2026-10-01&end_date=2026-10-08"
+          }
+        },
+        {
+          "name": "Unlog Fajr",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/prayers/2026-10-08/FAJR"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Overview",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/analytics/overview?range=30d"
+          }
+        },
+        {
+          "name": "Deep work",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/analytics/deep-work?range=30d"
+          }
+        },
+        {
+          "name": "Time leaks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/analytics/time-leaks?range=30d"
+          }
+        },
+        {
+          "name": "Best and worst days",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/analytics/best-worst-days?range=30d"
+          }
+        },
+        {
+          "name": "Focus by time",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/analytics/focus-by-time?range=30d"
+          }
+        },
+        {
+          "name": "Prayer analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/analytics/prayers?range=30d"
+          }
+        },
+        {
+          "name": "Career analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/analytics/career-output?range=30d"
+          }
+        },
+        {
+          "name": "Weekday versus weekend",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/analytics/weekday-weekend?range=30d"
+          }
+        },
+        {
+          "name": "Sleep and focus",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/analytics/sleep-focus?range=30d"
+          }
+        },
+        {
+          "name": "Trends",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/analytics/trends?range=30d"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Administration",
+      "item": [
+        {
+          "name": "Export all data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/export"
+          }
+        },
+        {
+          "name": "Delete all data (confirmed)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/data?confirm=true"
+          }
+        }
+      ]
+    }
+  ]
+}
