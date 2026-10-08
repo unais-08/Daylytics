@@ -85,8 +85,35 @@ Functions over 40 lines:
 - The existing test warning from the installed Starlette/httpx combination is
   retained.
 
-## Target outcome
+## Final before/after map
 
-Move infrastructure into `app/core`, introduce feature modules with thin
-routers and services, keep `app/analytics` framework-independent, and preserve
-the captured OpenAPI contract and all existing tests.
+Before, `app/main.py` was a 619-line route, persistence, serialization, and
+analytics module. Models, schemas, services, and infrastructure were also
+flat files directly under `app/`.
+
+After, infrastructure is under `app/core`, API composition is under
+`app/api`, and each domain is under `app/modules/` with models, schemas,
+services, and thin routers. Analytics loading is in
+`app/modules/analytics/service.py`; pure analyses are split across
+`app/analytics/` and use `frames.py`. Alembic discovers models through
+`app/db/base.py`. `main.py` now only creates the configured FastAPI
+application. `tests/test_architecture.py` enforces the dependency boundaries
+and 400-line hard limit.
+
+## Final verification
+
+- Baseline: 18 tests passed.
+- Final: 23 tests passed.
+- Ruff: clean.
+- OpenAPI: matches `docs/openapi.before.json` after ordering and operation-ID
+  normalization.
+- All application Python files are below the 400-line hard limit.
+
+## Bugs or behavior gaps deliberately not fixed
+
+The existing analytics implementation returns insufficient data for some
+seeded analyses (for example, trends and weekday/weekend in the current frame
+rules). The seed script creates data using UTC dates while the application
+displays configured local dates. The installed Starlette/httpx deprecation
+warning remains. These are behavior decisions or pre-existing issues, not
+refactor changes.
