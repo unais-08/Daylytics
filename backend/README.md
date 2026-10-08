@@ -61,7 +61,7 @@ erDiagram
 
 See [docs/API_CONTRACT.md](docs/API_CONTRACT.md) for frontend integration
 details, [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the module boundaries,
-and [docs/DECISIONS.md](docs/DECISIONS.md) for implementation choices.
+design decisions, and dependency rules.
 
 Backend contribution guidance is in [AGENTS.md](AGENTS.md). The refactor audit
 and deliberately preserved behavior gaps are recorded in

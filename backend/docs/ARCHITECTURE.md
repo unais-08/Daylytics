@@ -53,3 +53,18 @@ frames.
 - **AST architecture tests** protect the dependency contract and the hard
   Python file-size limit.
 - **OpenAPI snapshots** detect accidental endpoint or response contract changes.
+
+## Design decisions
+
+- Use a single FastAPI application for the MVP; routers are split by feature
+  without introducing a plugin or dependency-injection framework.
+- Use SQLite with SQLAlchemy 2 typed models and UTC-aware timestamps.
+- Derive durations and deep-work defaults instead of storing redundant values.
+- Keep the implementation dependency-light and preserve a portable SQLAlchemy
+  model shape.
+- Keep the generated Alembic migration intact during modularization. Only the
+  model import registry moves because migration history is part of the
+  database contract.
+- Preserve response construction and route operation IDs while moving
+  handlers. The OpenAPI baseline comparison normalizes only ordering and
+  operation IDs, not endpoint paths or response shapes.
